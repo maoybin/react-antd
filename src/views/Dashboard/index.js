@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
+import { Card } from 'antd';
 
 export default class DashBoard extends Component {
     render() {
         return (
-            <div>
-                仪表盘
-            </div>
+            <>
+                <Card
+                    title="概览"
+                    bordered={false}
+                >
+                   
+                </Card>
+            </>
         )
     }
 }

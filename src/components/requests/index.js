@@ -34,7 +34,7 @@ servers.interceptors.response.use((resp)=>{
 
     }else{
 
-
+        console.log('错误了')
 
         //全局错误处理
         message.error(resp.data.errMsg)
@@ -43,6 +43,7 @@ servers.interceptors.response.use((resp)=>{
    
 })
 
+// 获取文章列表
 export const getArticalList  = (offset=0,limited=10) => {
 
     return servers.post('/api/v1/articleList',{
@@ -52,5 +53,31 @@ export const getArticalList  = (offset=0,limited=10) => {
 
     })
 }   
+
+
+// 获取文章列表
+export const articalDelete  = (id) => {
+
+    return servers.post(`/api/v1/articalDelete/:${id}`)
+}
+
+
+// 获取文章信息
+export const getArticalDetail  = (id) => {
+
+    return servers.post(`/api/v1/getArtical/:${id}`)
+}
+
+
+// 保存文章
+export const saveArticle  = (id,data) => {
+
+    return servers.post(`/api/v1/article/:${id}`,data)
+}
+
+
+
+
+
 
 

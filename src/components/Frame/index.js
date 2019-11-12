@@ -15,6 +15,15 @@ class Frame extends Component {
     }
 
     render() {
+
+        const selectedKeyArr = this.props.location.pathname.split('/')
+
+        selectedKeyArr.length = 3
+
+
+
+        
+
         return (
             <Layout style={{minHeight:'100%'}}>
             <Header className="header ss-header">
@@ -26,7 +35,7 @@ class Frame extends Component {
               <Sider width={200} style={{ background: '#fff' }}>
                 <Menu
                   mode="inline"
-                  selectedKeys={[this.props.location.pathname]}
+                  selectedKeys={[selectedKeyArr.join('/')]}
                   style={{ height: '100%', borderRight: 0 }}
                   onClick={this.menuOnclick}
                 >

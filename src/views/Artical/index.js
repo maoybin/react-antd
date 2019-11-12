@@ -1,11 +1,22 @@
 import React, { Component } from 'react'
-import { Card,Button,Table ,Tag} from 'antd';
+import { 
+    Card,
+    Button,
+    Table ,
+    Tag,
+    Modal,
+    Typography,
+    message,
+    Tooltip
+} from 'antd';
+
+import XLSX from 'xlsx'
 
 import moment from 'moment'
 
 
 
-import {getArticalList} from '../../components/requests'
+import {getArticalList,articalDelete} from '../../components/requests'
 
 const ButtonGroup = Button.Group
 // window.moment = moment
@@ -15,7 +26,7 @@ const titleDisplayMap={
     title:'标题',
     author:'作者',
     amount:'阅读量',
-    createAt:'创建时间'
+    createAt:'发布时间'
 }
 
 export default class ArticalList extends Component {
@@ -29,10 +40,16 @@ export default class ArticalList extends Component {
             total:0,
             isLoading:false,
             offset:0,
-            limited:10
+            limited:10,
+            deletArticalContent:'',
+            isShowModal:false,
+            isShowComfirLoading:false,
+            cancelID:null
         }
 
     }
+
+
 
     createColumns = (columnsKeys)=>{
 
@@ -64,7 +81,11 @@ export default class ArticalList extends Component {
 
                         const {amount} = record
 
-                        return <Tag color={amount>220?'red':'green'}>{amount}</Tag>
+                        return (
+                            <Tooltip title={amount>220?'超过220':'低于220'}>
+                                <Tag color={amount>220?'red':'green'}>{amount}</Tag>
+                            </Tooltip>
+                        )
                     }
                 }
             }
@@ -78,11 +99,11 @@ export default class ArticalList extends Component {
          columns.push({
             title: '操作',
             key: 'action',
-            render:()=>{
+            render:(record)=>{
                 return (
                     <ButtonGroup>
-                        <Button type='primary' size='small'>编辑</Button>
-                        <Button type='danger' size='small'>删除</Button>
+                        <Button type='primary' size='small' onClick={this.toEdit.bind(this,record)}>编辑</Button>
+                        <Button type='danger' size='small' onClick={this.cancelArtical.bind(this,record)}>删除</Button>
                     </ButtonGroup>
                 )
             }
@@ -90,6 +111,26 @@ export default class ArticalList extends Component {
 
          return columns;
     }
+
+    toEdit = (record) =>{
+        this.props.history.push({
+            pathname:`/admin/artical/edit/${record.id}`,
+            state:{
+                title:record.title
+            }
+        })
+    }
+
+    cancelArtical = (record)=>{
+
+        this.setState({
+            isShowModal:true,
+            deletArticalContent:record.title,
+            cancelID:record.id
+            // isShowComfirLoading:true
+        })
+    }
+
 
     getDtata = ()=>{
 
@@ -150,12 +191,63 @@ export default class ArticalList extends Component {
 
     }
 
+    toExcel = ()=>{
+       /* convert state to workbook */
+
+       const data = [Object.keys(this.state.dataSource[0])]
+
+       for (let i=0;i<this.state.dataSource.length;i++){
+           data.push(Object.values(this.state.dataSource[i]))
+       }
+
+		const ws = XLSX.utils.aoa_to_sheet(data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		/* generate XLSX file and send to client */
+		XLSX.writeFile(wb, `articals-${moment().format('YYYYMMDDHHmmss')}.xlsx`)
+    }
+
+    comfirBtnClicked = ()=>{
+        this.setState({
+            // isShowModal:false,
+            isShowComfirLoading:true
+        })
+
+        articalDelete(this.state.cancelID)
+        .then(resp=>{
+            message.success(resp.msg)
+            this.setState({
+                offset:0
+            },()=>{
+                this.getDtata()
+            })
+           
+        })
+        .finally(()=>{
+
+           this.setState({
+               isShowComfirLoading:false,
+               isShowModal:false
+           })
+        })
+    }
+
+    hideModal = (id)=>{
+        console.log('隐藏')
+        this.setState({
+            isShowModal:false,
+           
+        })
+
+    }
+
     render() {
         return (
           <Card 
           title="文章列表"
           bordered={false}
-          extra={<Button>导出excel</Button>}
+
+          extra={<Button onClick={this.toExcel}>导出excel</Button>}
           >
             <Table 
                 rowKey={record=>record.id}
@@ -173,6 +265,15 @@ export default class ArticalList extends Component {
                
                 loading={this.state.isLoading}
             />;
+            <Modal
+              title='此操作不可以逆,请谨慎!!!'
+              visible = {this.state.isShowModal}
+              onCancel = {this.hideModal}
+              confirmLoading={this.state.isShowComfirLoading}
+              onOk = {this.comfirBtnClicked}
+            >
+                <Typography>确定删除<span style={{color:'#f00'}}>{this.state.deletArticalContent}</span>吗??</Typography>
+            </Modal>
           </Card>
         )
     }
