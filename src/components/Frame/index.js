@@ -1,14 +1,32 @@
 import React, { Component } from 'react'
-import { Layout, Menu,Icon } from 'antd';
+import { Layout, Menu,Icon,Dropdown,Avatar, Badge} from 'antd';
 import logo from './logo.png'
 import './logo.less'
 import { withRouter} from 'react-router-dom'
+
+import {connect} from 'react-redux'
+
 const { Header, Content, Sider } = Layout;
 
+const mapState = state =>{
+
+  const notificationCount = state.notification.list.filter(item =>item.hasReaded === false).length
+
+  return {
+    notificationCount
+  }
+}
+
 @withRouter
+
+@connect(mapState)
 class Frame extends Component {
 
-    menuOnclick = ({key})=>{
+  menuOnclick = ({key})=>{
+    this.props.history.push(key)
+  }
+
+    onClickMenuDropDown = ({key})=>{
 
       this.props.history.push(key)
       
@@ -20,9 +38,21 @@ class Frame extends Component {
 
         selectedKeyArr.length = 3
 
-
-
-        
+        const menu = (
+          <Menu onClick={this.onClickMenuDropDown}>
+              <Menu.Item key="/admin/notifications">
+                <Badge dot={Boolean(this.props.notificationCount)}>
+                  通知中心
+                </Badge>
+              </Menu.Item>
+              <Menu.Item key="/admin/settings">
+                个人设置
+              </Menu.Item>
+              <Menu.Item key="/login">
+                退出登录
+              </Menu.Item>
+          </Menu>
+        );
 
         return (
             <Layout style={{minHeight:'100%'}}>
@@ -30,7 +60,22 @@ class Frame extends Component {
               <div className="ss-logo">
                   <img src={logo} alt="中国砂石网"/>
               </div>
+
+              <Dropdown overlay={menu} trigger={['click']}>
+                <div style={{display:'flex',alignItems:'center'}}> 
+                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                    欢迎您！毛永斌 
+                  <Badge offset={[-10,-10]} count={this.props.notificationCount}>
+                    <Icon type="down" />
+                  </Badge>
+                  
+                </div>
+              </Dropdown>
             </Header>
+
+
+
+
             <Layout>
               <Sider width={200} style={{ background: '#fff' }}>
                 <Menu

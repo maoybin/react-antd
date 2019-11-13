@@ -4,7 +4,8 @@ import{
     NotFound,
     Settings,
     ArticalList,
-    ArticalEdit
+    ArticalEdit,
+    Notifications
 } from '../views'
 
 const mainRouter = [{
@@ -32,6 +33,9 @@ const adminRouter = [{
 },{
     pathname:'/admin/artical/edit/:id',
     componnet:ArticalEdit
+},{
+    pathname:'/admin/notifications',
+    componnet:Notifications
 },{
     pathname:'/admin/settings',
     componnet:Settings,

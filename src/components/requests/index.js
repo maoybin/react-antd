@@ -75,6 +75,15 @@ export const saveArticle  = (id,data) => {
     return servers.post(`/api/v1/article/:${id}`,data)
 }
 
+// 保存文章
+export const getArticleAmount  = () => {
+
+    return servers.post(`/api/v1/articalAmount`)
+}
+
+
+
+
 
 
 
