@@ -82,6 +82,15 @@ export const getArticleAmount  = () => {
 }
 
 
+// 获取通知列表
+export const getNotifications  = () => {
+
+    return servers.post(`/api/v1/notification`)
+}
+
+
+
+
 
 
 

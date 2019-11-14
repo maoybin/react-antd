@@ -6,6 +6,8 @@ import { withRouter} from 'react-router-dom'
 
 import {connect} from 'react-redux'
 
+import {getNOtificationList} from '../../actions/notification'
+
 const { Header, Content, Sider } = Layout;
 
 const mapState = state =>{
@@ -19,8 +21,12 @@ const mapState = state =>{
 
 @withRouter
 
-@connect(mapState)
+@connect(mapState,{getNOtificationList})
 class Frame extends Component {
+
+  componentDidMount(){
+    this.props.getNOtificationList()
+  }
 
   menuOnclick = ({key})=>{
     this.props.history.push(key)

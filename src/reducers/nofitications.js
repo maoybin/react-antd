@@ -49,6 +49,27 @@ export const notification = (state = initState,action) => {
             list:allist
         };
 
+        case actionTpyes.START_MARK_NOTIFICATION_HAS_READED:
+
+        return {
+            ...state,
+            isLoading:true
+        }
+
+        case actionTpyes.FINISH_MARK_NOTIFICATION_HAS_READED:
+
+        return {
+            ...state,
+            isLoading:false
+        }
+
+        case actionTpyes.RECIVED_NOTIFICATION:
+            return{
+                list:action.payload.list,
+                isLoading:false
+
+            }
+
         default:
                 return state;
     }

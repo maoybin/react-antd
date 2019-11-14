@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card,Button,List,Avatar, Badge} from 'antd';
+import { Card,Button,List,Avatar, Badge,Spin} from 'antd';
 
 import {connect} from 'react-redux'
 
@@ -9,11 +9,13 @@ import {markNotificationHasReadedById,markAllNotificationHasReaded} from '../../
  const mapState = (state)=>{
   
      const {
-       list
+       list,
+       isLoading
      }= state.notification
 
      return {
-       list
+       list,
+       isLoading
      };
  } 
 
@@ -22,8 +24,9 @@ import {markNotificationHasReadedById,markAllNotificationHasReaded} from '../../
 class Notification extends Component {
 
     render() {
-
+        console.log(this.props)
         return (
+        <Spin spinning={this.props.isLoading}>
             <Card 
                 title="通知中心"
                 bordered={false}
@@ -65,6 +68,7 @@ class Notification extends Component {
                 />
 
             </Card>
+          </Spin>   
         )
     }
 }
