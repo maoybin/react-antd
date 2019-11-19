@@ -7,6 +7,7 @@ import { withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 import {getNOtificationList} from '../../actions/notification'
+import {logout} from '../../actions/user'
 
 const { Header, Content, Sider } = Layout;
 
@@ -15,13 +16,15 @@ const mapState = state =>{
   const notificationCount = state.notification.list.filter(item =>item.hasReaded === false).length
 
   return {
-    notificationCount
+    notificationCount,
+    displayname:state.user.displayname,
+    avatar:state.user.avatar
   }
 }
 
 @withRouter
 
-@connect(mapState,{getNOtificationList})
+@connect(mapState,{getNOtificationList,logout})
 class Frame extends Component {
 
   componentDidMount(){
@@ -34,7 +37,13 @@ class Frame extends Component {
 
     onClickMenuDropDown = ({key})=>{
 
-      this.props.history.push(key)
+      if(key==='/logout'){
+
+        this.props.logout();
+
+      }else{
+        this.props.history.push(key)
+      }
       
     }
 
@@ -54,7 +63,7 @@ class Frame extends Component {
               <Menu.Item key="/admin/settings">
                 个人设置
               </Menu.Item>
-              <Menu.Item key="/login">
+              <Menu.Item key="/logout">
                 退出登录
               </Menu.Item>
           </Menu>
@@ -69,8 +78,8 @@ class Frame extends Component {
 
               <Dropdown overlay={menu} trigger={['click']}>
                 <div style={{display:'flex',alignItems:'center'}}> 
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                    欢迎您！毛永斌 
+                  <Avatar src={this.props.avatar} />
+                    欢迎您！{this.props.displayname} 
                   <Badge offset={[-10,-10]} count={this.props.notificationCount}>
                     <Icon type="down" />
                   </Badge>

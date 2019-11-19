@@ -5,7 +5,8 @@ import{
     Settings,
     ArticalList,
     ArticalEdit,
-    Notifications
+    Notifications,
+    NoAuth
 } from '../views'
 
 const mainRouter = [{
@@ -22,26 +23,35 @@ const adminRouter = [{
     componnet:Dashboard,
     title:'仪表盘',
     isNav:true,
-    icon:'dashboard'
+    icon:'dashboard',
+    roles:['001','002','003']
 },{
     pathname:'/admin/artical',
     componnet:ArticalList,
     exact:true,
     title:'文章管理',
     isNav:true,
-    icon:'unordered-list'
+    icon:'unordered-list',
+    roles:['001','002']
 },{
     pathname:'/admin/artical/edit/:id',
-    componnet:ArticalEdit
+    componnet:ArticalEdit,
+    roles:['001']
 },{
     pathname:'/admin/notifications',
-    componnet:Notifications
+    componnet:Notifications,
+    roles:['001','002','003']
 },{
     pathname:'/admin/settings',
     componnet:Settings,
     title:'设置',
     isNav:true,
-    icon:'setting'
+    icon:'setting',
+    roles:['001']
+},{
+    pathname:'/admin/noauth',
+    componnet:NoAuth,
+    roles:['001','002','003']
 }]
 
 export {
